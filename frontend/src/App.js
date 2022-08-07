@@ -1,8 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
 import React from "react";
-import UserList from './components/Users';
 import axios from "axios";
+
+import UserList from './components/Users';
+import Menu from "./components/Menu";
+import Footer from "./components/Footer";
 
 
 class App extends React.Component{
@@ -13,19 +16,22 @@ class App extends React.Component{
   }
 
   componentDidMount() {
-    const users = [];
+      
     axios.get('http://127.0.0.1:8000/api/usersapp/').then(response => {
         this.setState(
             {
              'users': response.data
-            })
+        })
     }).catch(error => console.log(error))
+
   }
 
   render() {
     return(
         <div>
-          <UserList users={this.state.users}/>
+            <Menu menu/>
+            <UserList users={this.state.users}/>
+            <Footer footer/>
         </div>
     )
   }
