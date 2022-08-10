@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     # main
     'rest_framework',
     'usersapp',
-    'corsheaders'
+    'corsheaders',
+    'todoapp'
 ]
 
 MIDDLEWARE = [
