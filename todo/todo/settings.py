@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     # main
     'rest_framework',
     'usersapp',
-    'corsheaders'
+    'corsheaders',
+    'todoapp'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,10 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'usersapp.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES':[
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+}
