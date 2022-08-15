@@ -7,7 +7,7 @@ from usersapp.serializers import UserModelSerializer
 
 
 class UserModelViewSet(ModelViewSet):
-    renderer_classes = [CamelCaseJSONRenderer]
+    # renderer_classes = [CamelCaseJSONRenderer]
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
 
