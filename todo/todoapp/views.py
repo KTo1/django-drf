@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Project, ToDo
-from .serializers import ProjectHyperlinkedModelSerializer, ToDoModelSerializer
+from .serializers import ProjectModelSerializer, ToDoModelSerializer
 
 
 class ProjectLimitOffsetPagination(LimitOffsetPagination):
@@ -19,7 +19,7 @@ class ProjectLimitOffsetPagination(LimitOffsetPagination):
 class ProjectModelViewSet(ModelViewSet):
     # renderer_classes = [AdminRenderer, JSONRenderer]
     # queryset = Project.objects.all()
-    serializer_class = ProjectHyperlinkedModelSerializer
+    serializer_class = ProjectModelSerializer
     pagination_class = ProjectLimitOffsetPagination
 
     def get_queryset(self):
