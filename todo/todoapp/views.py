@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
@@ -47,7 +49,7 @@ class ToDoModelViewSet(ModelViewSet):
 
             elements = ToDo.objects.all()
             serializer_class = ToDoModelSerializer(elements, many=True)
-            
+
             return Response(serializer_class.data)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -57,5 +59,14 @@ class ToDoModelViewSet(ModelViewSet):
         elements = ToDo.objects.all()
         if project:
             elements = elements.filter(project=project)
+
+        from_date = self.request.query_params.get('from_date', '')
+        to_date = self.request.query_params.get('to_date', '')
+        if from_date and to_date:
+            from_date = datetime.strptime(from_date, "%Y-%m-%d")
+            to_date = datetime.strptime(to_date, "%Y-%m-%d")
+            to_date = datetime(year=to_date.year,month=to_date.month,day=to_date.day) + timedelta(days=1, microseconds=-1)
+
+            elements = elements.filter(created__range=[from_date, to_date])
 
         return elements
