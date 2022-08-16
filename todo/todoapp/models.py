@@ -8,6 +8,8 @@ class Project(models.Model):
     repo = models.URLField(verbose_name='Репозиторий', blank=True)
     users = models.ManyToManyField(User, verbose_name='Пользователи')
 
+    def __str__(self):
+        return f'({self.id}) {self.name}'
 
 class ToDo(models.Model):
     project = models.ForeignKey(Project, verbose_name='Проект', on_delete=models.CASCADE)
