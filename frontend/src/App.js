@@ -12,7 +12,7 @@ import Footer from "./components/Footer";
 import NotFound404 from "./components/NotFound404";
 
 
-import {HashRouter, BrowserRouter, Route, Link, Switch} from "react-router-dom";
+import {HashRouter, BrowserRouter, Routes, Route, Navigate, Link} from "react-router-dom";
 
 
 class App extends React.Component {
@@ -56,7 +56,7 @@ class App extends React.Component {
             <div>
                 <Menu menu/>
 
-                <HashRouter>
+                <BrowserRouter>
                     <nav>
                         <ul>
                             <li><Link as={Link} to='/'> Projects </Link></li>
@@ -65,16 +65,19 @@ class App extends React.Component {
                         </ul>
                     </nav>
 
-                    <Switch>
-                        <Route exact path='/' component={() => <ProjectList items={this.state.projects}/>}/>
-                        <Route exact path='/todos' component={() => <TodoList items={this.state.todos}/>}/>
-                        <Route exact path='/users/' component={() => <UserList items={this.state.users}/>}/>
+                    <Routes>
+                        <Route exact path='/' element={<Navigate to='/projects' />}/>
+                        <Route exact path='/todos' element={<TodoList items={this.state.todos}/>}/>
+                        <Route exact path='/users/' element={<UserList items={this.state.users}/>}/>
 
-                        <Route exact path='/project/:id' component={() => <ProjectTodoList items={this.state.todos}/>}/>
+                        <Route path='/projects'>
+                            <Route index element={<ProjectList items={this.state.projects} />} />
+                            <Route path='project/:projectId' element={<ProjectTodoList items={this.state.todos} />} />
+                        </Route>
 
-                        <Route component={NotFound404}/>
-                    </Switch>
-                </HashRouter>
+                        <Route path='*' element={NotFound404}/>
+                    </Routes>
+                </BrowserRouter>
                 <Footer footer/>
             </div>
         )
