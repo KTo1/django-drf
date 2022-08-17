@@ -1,27 +1,27 @@
 import React from "react";
 
 
-const TodoItem = ({todo}) => {
+const TodoItem = ({item}) => {
 
     return (
         <tr>
             <td>
-                {todo.subject}
+                {item.subject}
             </td>
             <td>
-                {todo.user}
+                {item.user}
             </td>
             <td>
-                {todo.created}
+                {item.created}
             </td>
             <td>
-                {todo.is_active}
+                {item.is_active}
             </td>
         </tr>
     )
 }
 
-const TodoList = ({todos}) => {
+const TodoList = ({items}) => {
 
     return (
         <table>
@@ -38,7 +38,7 @@ const TodoList = ({todos}) => {
                 Active
             </th>
 
-            {todos.map((todo) => <TodoItem todo = {todo}/>)}
+            {items.map((item) => <TodoItem item = {item}/>)}
         </table>
     )
 }
