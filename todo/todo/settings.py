@@ -152,8 +152,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'usersapp.User'
 
-# from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
-from rest_framework.authentication import TokenAuthentication
+# from rest_framework.permissions import IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly, DjangoModelPermissions
+# from rest_framework.authentication import TokenAuthentication
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES':[
