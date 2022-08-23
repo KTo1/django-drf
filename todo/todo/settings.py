@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'usersapp',
     'corsheaders',
-    'todoapp'
+    'todoapp',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
