@@ -40,7 +40,7 @@ class App extends React.Component {
     get_token_from_storage() {
         const cookie = new Cookies;
         const token = cookie.get('token');
-        this.setState({'token': token})
+        this.setState({'token': token}, () => this.load_data())
     }
 
     get_token(username, password) {
@@ -53,25 +53,39 @@ class App extends React.Component {
     set_token(token) {
         const cookie = new Cookies;
         cookie.set('token', token);
-        this.setState({'token': token})
+        this.setState({'token': token}, () => this.load_data())
+    }
+
+    get_headers(){
+        let headers = {
+            'Content-Type': 'application/json'
+        }
+        if (this.is_auth()) {
+            headers['Authorization'] = 'Token ' + this.state.token
+        }
+
+        return headers;
     }
 
     load_data() {
-        axios.get('http://127.0.0.1:8000/api/users/').then(response => {
+
+        const headers = this.get_headers()
+
+        axios.get('http://127.0.0.1:8000/api/users/', {headers}).then(response => {
             this.setState(
                 {
                     'users': response.data['results']
                 })
         }).catch(error => console.log(error))
 
-        axios.get('http://127.0.0.1:8000/api/projects/').then(response => {
+        axios.get('http://127.0.0.1:8000/api/projects/', {headers}).then(response => {
             this.setState(
                 {
                     'projects': response.data['results']
                 })
         }).catch(error => console.log(error))
 
-        axios.get('http://127.0.0.1:8000/api/todos/').then(response => {
+        axios.get('http://127.0.0.1:8000/api/todos/', {headers}).then(response => {
             this.setState(
                 {
                     'todos': response.data['results']
