@@ -10,6 +10,7 @@ import TodoList from "./components/ToDoS";
 import Menu from "./components/Menu";
 import Footer from "./components/Footer";
 import NotFound404 from "./components/NotFound404";
+import LoginForm from "./components/Auth";
 
 
 import {HashRouter, BrowserRouter, Routes, Route, Navigate, Link} from "react-router-dom";
@@ -24,6 +25,12 @@ class App extends React.Component {
             'projects': [],
             'todos': []
         }
+    }
+
+    get_token(username, password){
+         axios.post('http://127.0.0.1:8000/api-token-auth/', {username: username, password: password}).then(response => {
+            console.log(response.data)
+        }).catch(error => alert('Неверный логин или пароль!'))
     }
 
     componentDidMount() {
@@ -62,6 +69,7 @@ class App extends React.Component {
                             <li><Link as={Link} to='/'> Projects </Link></li>
                             <li><Link as={Link} to='/todos'> Todos </Link></li>
                             <li><Link as={Link} to='/users'> Users </Link></li>
+                            <li><Link as={Link} to='/login'> Login </Link></li>
                         </ul>
                     </nav>
 
@@ -69,6 +77,7 @@ class App extends React.Component {
                         <Route exact path='/' element={<Navigate to='/projects' />}/>
                         <Route exact path='/todos' element={<TodoList items={this.state.todos}/>}/>
                         <Route exact path='/users/' element={<UserList items={this.state.users}/>}/>
+                        <Route exact path='/login/' element={<LoginForm get_token={(username, password) => this.get_token(username, password)}/>}/>
 
                         <Route path='/projects'>
                             <Route index element={<ProjectList items={this.state.projects} />} />
