@@ -1,6 +1,6 @@
 from django.test import TestCase
 from rest_framework import status
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIRequestFactory, APIClient
 from .models import User
 from .views import UserModelViewSet
 
@@ -9,6 +9,7 @@ from .views import UserModelViewSet
 class TestUserModelViewSet(TestCase):
     def setUp(self) -> None:
         self.factory = APIRequestFactory()
+        self.client = APIClient()
         self.url = '/api/users/'
         self.format = 'json'
         self.data = {'username':'kto1', 'email':'kto1@kto.ru', 'password':'kto1@kto.ru'}
@@ -30,6 +31,11 @@ class TestUserModelViewSet(TestCase):
         # response = view(request)
         #
         # self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    #ApiClient
+    def test_get_detail_apiclient(self):
+        response = self.client.get(f'{self.url}{self.admin.id}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def tearDown(self) -> None:
         pass
