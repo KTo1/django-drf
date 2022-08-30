@@ -12,6 +12,7 @@ class TestUserModelViewSet(TestCase):
         self.url = '/api/users/'
         self.format = 'json'
         self.data = {'username':'kto1', 'email':'kto1@kto.ru', 'password':'kto1@kto.ru'}
+        self.admin = User.objects.create_superuser('kto', 'kto@kto.ru', 'kto@kto.rukto@kto.ru')
 
     #ApiRequestFactory
     def test_get_list(self):

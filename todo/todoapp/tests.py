@@ -25,6 +25,13 @@ class TestToDoModelViewSet(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_create_guest(self):
+        request = self.factory.post(self.url, self.data, format=self.format)
+        view = ToDoModelViewSet.as_view({'post':'create'})
+        response = view(request)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_create_admin(self):
         request = self.factory.post(self.url, self.data, format=self.format)
         force_authenticate(request, self.admin)
