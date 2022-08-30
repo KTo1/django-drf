@@ -1,12 +1,13 @@
+import json
+
 from django.test import TestCase
 from rest_framework import status
-from rest_framework.test import force_authenticate, APIRequestFactory, APIClient
+from rest_framework.test import force_authenticate, APIRequestFactory, APIClient, APITestCase
 from .models import ToDo, Project
 from .views import ToDoModelViewSet, ProjectModelViewSet
 from usersapp.models import User
 
 
-# Create your tests here.
 class TestToDoModelViewSet(TestCase):
     def setUp(self) -> None:
         self.url = '/api/todos/'
@@ -54,10 +55,11 @@ class TestToDoModelViewSet(TestCase):
     def test_edit_admin_apiclient(self):
         todo = ToDo.objects.create(**self.data)
         new_subject = 'subject new'
+        new_data = json.dumps({'project': self.project.id, 'user': self.admin.id, 'subject': new_subject})
 
         self.client.login(username=self.admin.username, password=self.admin_pwd)
 
-        response = self.client.put(f'{self.url}{todo.id}/', {'subject': new_subject})
+        response = self.client.put(f'{self.url}{todo.id}/', new_data, content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         todo.refresh_from_db()
@@ -65,6 +67,19 @@ class TestToDoModelViewSet(TestCase):
         self.assertEqual(todo.subject, new_subject)
 
         self.client.logout()
+
+    def tearDown(self) -> None:
+        pass
+
+
+class TestToDoTestCase(APITestCase):
+
+    def setUp(self) -> None:
+        self.url = '/api/todos/'
+
+    def test_get_list_testcase(self):
+        response= self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def tearDown(self) -> None:
         pass
@@ -127,6 +142,37 @@ class TestProjectModelViewSet(TestCase):
 
         self.client.logout()
 
+
+    def tearDown(self) -> None:
+        pass
+
+
+class TestProjectTestCase(APITestCase):
+
+    def setUp(self) -> None:
+        self.url = '/api/projects/'
+        self.admin_pwd = 'kto@kto.rukto@kto.ru'
+        self.admin = User.objects.create_superuser('kto', 'kto@kto.ru', self.admin_pwd)
+        
+    def test_get_list_testcase(self):
+        response= self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_edit_admin_apiclient(self):
+
+        project = Project.objects.create(name='project1', repo='')
+        new_name = 'project2'
+
+        self.client.login(username=self.admin.username, password=self.admin_pwd)
+
+        response = self.client.put(f'{self.url}{project.id}/', {'name': new_name, 'users': [self.admin.id]})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        project.refresh_from_db()
+
+        self.assertEqual(project.name, new_name)
+
+        self.client.logout()
 
     def tearDown(self) -> None:
         pass

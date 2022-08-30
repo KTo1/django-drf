@@ -1,11 +1,23 @@
 from django.test import TestCase
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APIClient
+from rest_framework.test import APIRequestFactory, APIClient, APITestCase
 from .models import User
 from .views import UserModelViewSet
 
 
-# Create your tests here.
+class TestUserTestCase(APITestCase):
+
+    def setUp(self) -> None:
+        self.url = '/api/users/'
+
+    def test_get_list_testcase(self):
+        response= self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def tearDown(self) -> None:
+        pass
+
+
 class TestUserModelViewSet(TestCase):
     def setUp(self) -> None:
         self.factory = APIRequestFactory()
