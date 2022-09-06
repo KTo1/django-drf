@@ -31,6 +31,9 @@ class Query(ObjectType):
     all_users = graphene.List(UserType)
     all_projects = graphene.List(ProjectType)
 
+    user_todos = graphene.List(ToDoType, user_id=graphene.Int(required=False))
+    user_project = graphene.List(ProjectType, user_id=graphene.Int(required=False))
+
     def resolve_all_todos(root, info):
         return ToDo.objects.all()
 
@@ -40,5 +43,14 @@ class Query(ObjectType):
     def resolve_all_projects(root, info):
         return Project.objects.all()
 
+    def resolve_user_todos(root, info, user_id=None):
+        if user_id:
+            return ToDo.objects.filter(user__id=user_id)
+        return None
+
+    def resolve_user_project(root, info, user_id=None):
+        if user_id:
+            return Project.objects.filter(users__id=user_id)
+        return None
 
 schema = graphene.Schema(query=Query)
