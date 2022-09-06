@@ -6,6 +6,8 @@ from todoapp.models import Project, ToDo
 from usersapp.models import User
 
 
+#region Type
+
 class ProjectType(DjangoObjectType):
     class Meta:
         model = Project
@@ -23,6 +25,9 @@ class UserType(DjangoObjectType):
         model = User
         fields = '__all__'
 
+#endregion
+
+#region ToDo mutation
 
 class ToDoCreateMutation(Mutation):
     class Arguments:
@@ -52,6 +57,7 @@ class ToDoUpdateMutation(Mutation):
 
         return cls(todo=todo)
 
+
 class ToDoDeleteMutation(Mutation):
     class Arguments:
         id = graphene.ID()
@@ -63,11 +69,68 @@ class ToDoDeleteMutation(Mutation):
         ToDo.objects.get(id=kwargs.get('id')).delete()
         return cls(todo=ToDo.objects.all())
 
+#endregion
+
+#region Project mutation
+
+class ProjectCreateMutation(Mutation):
+    class Arguments:
+        name = graphene.String()
+        repo = graphene.String()
+        users = graphene.List(graphene.Int)
+
+    project = graphene.Field(ProjectType)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        project = Project()
+        project.name = kwargs.get('name')
+        project.repo = kwargs.get('repo')
+        project.save()
+
+        project.users.set(kwargs.get('users'))
+        project.save()
+
+        return cls(project=project)
+
+
+class ProjectUpdateMutation(Mutation):
+    class Arguments:
+        id = graphene.ID()
+        name = graphene.String()
+
+    project = graphene.Field(ProjectType)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        project = Project.objects.get(id=kwargs.get('id'))
+        project.name = kwargs.get('name')
+        project.save()
+
+        return cls(project=project)
+
+
+class ProjectDeleteMutation(Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    project = graphene.List(ProjectType)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        Project.objects.get(id=kwargs.get('id')).delete()
+        return cls(project=Project.objects.all())
+
+#endregion
 
 class Mutations(ObjectType):
     create_todo = ToDoCreateMutation.Field()
     update_todo = ToDoUpdateMutation.Field()
     delete_todo = ToDoDeleteMutation.Field()
+
+    create_project = ProjectCreateMutation.Field()
+    update_project = ProjectUpdateMutation.Field()
+    delete_project = ProjectDeleteMutation.Field()
 
 
 class Query(ObjectType):
