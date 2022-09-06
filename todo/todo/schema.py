@@ -1,5 +1,5 @@
 import graphene
-from graphene import ObjectType
+from graphene import ObjectType, Mutation
 from graphene_django import DjangoObjectType
 
 from todoapp.models import Project, ToDo
@@ -22,6 +22,52 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
         fields = '__all__'
+
+
+class ToDoCreateMutation(Mutation):
+    class Arguments:
+        project_id = graphene.Int()
+        user_id = graphene.Int()
+        subject = graphene.String()
+
+    todo = graphene.Field(ToDoType)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        return cls(todo=ToDo.objects.create(**kwargs))
+
+
+class ToDoUpdateMutation(Mutation):
+    class Arguments:
+        id = graphene.ID()
+        subject = graphene.String()
+
+    todo = graphene.Field(ToDoType)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        todo = ToDo.objects.get(id=kwargs.get('id'))
+        todo.subject = kwargs.get('subject')
+        todo.save()
+
+        return cls(todo=todo)
+
+class ToDoDeleteMutation(Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    todo = graphene.List(ToDoType)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        ToDo.objects.get(id=kwargs.get('id')).delete()
+        return cls(todo=ToDo.objects.all())
+
+
+class Mutations(ObjectType):
+    create_todo = ToDoCreateMutation.Field()
+    update_todo = ToDoUpdateMutation.Field()
+    delete_todo = ToDoDeleteMutation.Field()
 
 
 class Query(ObjectType):
@@ -53,4 +99,5 @@ class Query(ObjectType):
             return Project.objects.filter(users__id=user_id)
         return None
 
-schema = graphene.Schema(query=Query)
+
+schema = graphene.Schema(query=Query, mutation=Mutations)
