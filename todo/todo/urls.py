@@ -55,5 +55,5 @@ urlpatterns = [
     path('swagger<str:format>/', schema_view.without_ui(cache_timeout=0)),
     path('swagger/', schema_view.with_ui('swagger')),
     path('redoc/', schema_view.with_ui('redoc')),
-    path('gql/', GraphQLView.as_view(graphiql=True)),
+    path('graphql/', GraphQLView.as_view(graphiql=True)),
 ]
