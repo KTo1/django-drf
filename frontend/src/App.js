@@ -29,6 +29,17 @@ class App extends React.Component {
         }
     }
 
+    delete_todo(id){
+        const headers = this.get_headers()
+
+        axios.delete(`http://127.0.0.1:8000/api/todos/${id}`, {headers}).then(response => {
+            this.load_data();
+        }).catch(error => {
+            console.log(error)
+            this.setState({books:[]})
+        })
+    }
+
     is_auth() {
         return this.state.token != ''
     }
@@ -117,7 +128,7 @@ class App extends React.Component {
 
                     <Routes>
                         <Route exact path='/' element={<Navigate to='/projects'/>}/>
-                        <Route exact path='/todos' element={<TodoList items={this.state.todos}/>}/>
+                        <Route exact path='/todos' element={<TodoList items={this.state.todos} delete_proc = {(id) => this.delete_todo(id)}/>}/>
                         <Route exact path='/users/' element={<UserList items={this.state.users}/>}/>
                         <Route exact path='/login/' element={<LoginForm
                             get_token={(username, password) => this.get_token(username, password)}/>}/>
