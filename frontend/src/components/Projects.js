@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 
-const ProjectItem = ({item}) => {
+const ProjectItem = ({item, delete_proc}) => {
 
     return (
         <tr>
@@ -15,12 +15,15 @@ const ProjectItem = ({item}) => {
             <td>
                 {item.users}
             </td>
+            <th>
+                <button onClick={() => delete_proc(item.id)} type='button'>Delete</button>
+            </th>
         </tr>
     )
 
 }
 
-const ProjectList = ({items}) => {
+const ProjectList = ({items, delete_proc}) => {
 
     return (
         <table>
@@ -33,7 +36,10 @@ const ProjectList = ({items}) => {
             <th>
                 Users
             </th>
-            {items.map((item) => <ProjectItem item = {item}/>)}
+            <th>
+                Delete
+            </th>
+            {items.map((item) => <ProjectItem item={item} delete_proc={delete_proc}/>)}
         </table>
     )
 }

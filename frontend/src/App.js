@@ -6,7 +6,9 @@ import axios from "axios";
 import UserList from './components/Users';
 import ProjectList from "./components/Projects";
 import ProjectTodoList from "./components/ProjectTodo";
+import ProjectForm from "./components/ProjectForm";
 import TodoList from "./components/ToDoS";
+import ToDoForm from "./components/ToDoForm";
 import Menu from "./components/Menu";
 import Footer from "./components/Footer";
 import NotFound404 from "./components/NotFound404";
@@ -29,14 +31,49 @@ class App extends React.Component {
         }
     }
 
-    delete_todo(id){
+    create_todo(project, subject, user) {
+        const headers = this.get_headers()
+        const data = {project: project, subject: subject, user: user}
+
+        axios.post(`http://127.0.0.1:8000/api/todos/`, data, {headers}).then(response => {
+            this.load_data();
+        }).catch(error => {
+            console.log(error)
+            this.setState({todos: []})
+        })
+    }
+
+    delete_todo(id) {
         const headers = this.get_headers()
 
         axios.delete(`http://127.0.0.1:8000/api/todos/${id}`, {headers}).then(response => {
             this.load_data();
         }).catch(error => {
             console.log(error)
-            this.setState({books:[]})
+            this.setState({todos: []})
+        })
+    }
+
+    create_project(name, repo, users) {
+        const headers = this.get_headers()
+        const data = {name: name, repo: repo, users: users}
+
+        axios.post(`http://127.0.0.1:8000/api/projects/`, data, {headers}).then(response => {
+            this.load_data();
+        }).catch(error => {
+            console.log(error)
+            this.setState({todos: []})
+        })
+    }
+
+    delete_project(id) {
+        const headers = this.get_headers()
+
+        axios.delete(`http://127.0.0.1:8000/api/projects/${id}`, {headers}).then(response => {
+            this.load_data();
+        }).catch(error => {
+            console.log(error)
+            this.setState({todos: []})
         })
     }
 
@@ -67,7 +104,7 @@ class App extends React.Component {
         this.setState({'token': token}, () => this.load_data())
     }
 
-    get_headers(){
+    get_headers() {
         let headers = {
             'Content-Type': 'application/json'
         }
@@ -128,14 +165,20 @@ class App extends React.Component {
 
                     <Routes>
                         <Route exact path='/' element={<Navigate to='/projects'/>}/>
-                        <Route exact path='/todos' element={<TodoList items={this.state.todos} delete_proc = {(id) => this.delete_todo(id)}/>}/>
+                        <Route exact path='/todos/' element={<TodoList items={this.state.todos}
+                                                                       delete_proc={(id) => this.delete_todo(id)}/>}/>
+                        <Route exact path='/todos/create/' element={<ToDoForm projects={this.state.projects} users={this.state.users}
+                                                                             create_proc={(project, subject, user) => this.create_todo(project, subject, user)}/>}/>
                         <Route exact path='/users/' element={<UserList items={this.state.users}/>}/>
                         <Route exact path='/login/' element={<LoginForm
                             get_token={(username, password) => this.get_token(username, password)}/>}/>
 
                         <Route path='/projects'>
-                            <Route index element={<ProjectList items={this.state.projects}/>}/>
+                            <Route index element={<ProjectList items={this.state.projects} delete_proc={(id) => this.delete_project(id)}/>}/>
                             <Route path='project/:projectId' element={<ProjectTodoList items={this.state.todos}/>}/>
+                            <Route exact path='/projects/create/' element={<ProjectForm users={this.state.users}
+                                                     create_proc={(name, repo, users) => this.create_project(name, repo, users)}/>}/>
+
                         </Route>
 
                         <Route path='*' element={NotFound404}/>
