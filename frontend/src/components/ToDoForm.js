@@ -4,7 +4,7 @@ import React from "react";
 class ToDoForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {project: '', subject: '', user: ''}
+        this.state = {project: props.projects[0], subject: '', user: ''}
     }
 
     handleSubmit(event){
@@ -20,6 +20,12 @@ class ToDoForm extends React.Component {
             }
         )
         console.log(this.state)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.projects.length && nextProps.users.length) {
+            this.setState({project: nextProps.projects[0].id, subject: '', user: nextProps.users[0].id})
+        }
     }
 
     render() {
