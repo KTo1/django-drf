@@ -7,6 +7,7 @@ import UserList from './components/Users';
 import ProjectList from "./components/Projects";
 import ProjectTodoList from "./components/ProjectTodo";
 import ProjectForm from "./components/ProjectForm";
+import ProjectSearchForm from "./components/ProjectSearchForm";
 import TodoList from "./components/ToDoS";
 import ToDoForm from "./components/ToDoForm";
 import Menu from "./components/Menu";
@@ -71,6 +72,20 @@ class App extends React.Component {
 
         axios.delete(`http://127.0.0.1:8000/api/projects/${id}`, {headers}).then(response => {
             this.load_data();
+        }).catch(error => {
+            console.log(error)
+            this.setState({todos: []})
+        })
+    }
+
+    search_project(name) {
+        const headers = this.get_headers()
+
+        axios.get(`http://127.0.0.1:8000/api/projects/?name=${name}`, {headers}).then(response => {
+            this.setState(
+                {
+                    'projects': response.data['results']
+                })
         }).catch(error => {
             console.log(error)
             this.setState({todos: []})
@@ -178,6 +193,8 @@ class App extends React.Component {
                             <Route path='project/:projectId' element={<ProjectTodoList items={this.state.todos}/>}/>
                             <Route exact path='/projects/create/' element={<ProjectForm users={this.state.users}
                                                      create_proc={(name, repo, users) => this.create_project(name, repo, users)}/>}/>
+                            <Route exact path='/projects/search/' element={<ProjectSearchForm projects={this.state.projects}
+                                                     search_proc={(name) => this.search_project(name)}/>}/>
 
                         </Route>
 
