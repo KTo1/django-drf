@@ -1,7 +1,7 @@
 import React from "react";
 
 
-const TodoItem = ({item}) => {
+const TodoItem = ({item, delete_proc}) => {
 
     return (
         <tr>
@@ -15,13 +15,16 @@ const TodoItem = ({item}) => {
                 {item.created}
             </td>
             <td>
-                {item.is_active}
+                {item.is_active.toString() }
             </td>
+            <th>
+                <button onClick={() => delete_proc(item.id)} type='button'>Delete</button>
+            </th>
         </tr>
     )
 }
 
-const TodoList = ({items}) => {
+const TodoList = ({items, delete_proc}) => {
 
     return (
         <table>
@@ -37,8 +40,11 @@ const TodoList = ({items}) => {
             <th>
                 Active
             </th>
+            <th>
+                Delete
+            </th>
 
-            {items.map((item) => <TodoItem item = {item}/>)}
+            {items.map((item) => <TodoItem item = {item} delete_proc={delete_proc}/>)}
         </table>
     )
 }
