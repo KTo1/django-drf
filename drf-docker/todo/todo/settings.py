@@ -107,8 +107,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'todo',
-            'USER': 'postgres'
+            'HOST': 'db',
+            'NAME': 'todo_db',
+            'USER': 'todo',
+            'PASSWORD': '1',
+            'PORT': '5432'
         }
     }
 
